@@ -1,7 +1,8 @@
 import { getAccessToken } from '../services/krogerAuth.js';
 
-export async function searchLocations(latlong) {
+export async function searchLocations(req, res) {
 
+    const latlong = req.query.latlong;
     const accessToken = await getAccessToken();
     const url = new URL("https://api.kroger.com/v1/locations");
     url.searchParams.set("filter.latLong.near", latlong);
