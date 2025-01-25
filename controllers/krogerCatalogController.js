@@ -61,34 +61,32 @@ export async function searchCatalog(req, res) {
     const searchTerm = req.query.searchTerm;
     const krogerLocations = req.query.krogerLocations;
 
+    const locationIds = krogerLocations.split(',');
     const accessToken = await getAccessToken('product.compact');
 
     const productMap = {};
 
-    for (const locationId of krogerLocations) {
-      try {
-        const items = await searchCatalogLocation(searchTerm, locationId, accessToken);
-        if (!items) continue;
-        for (const item of items) {
-          const { upc, price } = item;
-          if (!productMap[upc]) {
-            productMap[upc] = {
-              id: "Kroger-" + upc, 
-              store: "Kroger",
-              ...item
-            };
-          } else {
-            if (price < productMap[upc].price) {
-              productMap[upc].price = price;
+    for (const locationId of locationIds) {
+        try {
+            const items = await searchCatalogLocation(searchTerm, locationId, accessToken);
+            for (const item of items) {
+                const { upc, price } = item;
+                if (!productMap[upc]) {
+                    productMap[upc] = {
+                        id: "Kroger-" + upc, 
+                        store: "Kroger",
+                        ...item
+                    };
+                } else {
+                    if (price < productMap[upc].price) {
+                        productMap[upc].price = price;
+                    }
+                }
             }
-          }
+        } catch (err) {
+            console.error(err);
         }
-      } catch (err) {
-        console.error(err);
-      }
     }
-
-    console.log(Object.values(productMap));
     
     res.json(Object.values(productMap));    
 }
