@@ -2,7 +2,6 @@ const clientId = process.env.KROGER_CLIENT_ID;
 const clientSecret = process.env.KROGER_CLIENT_SECRET;
 
 export async function getAccessToken(scope = '') {
-    console.log("clientId:", clientId);
     const authString = btoa(`${clientId}:${clientSecret}`);
     const requestBody = new URLSearchParams({
         grant_type: 'client_credentials',
