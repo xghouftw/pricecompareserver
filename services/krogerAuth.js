@@ -1,7 +1,8 @@
-const clientId = process.env.REACT_APP_KROGER_CLIENT_ID;
-const clientSecret = process.env.REACT_APP_KROGER_CLIENT_SECRET;
+const clientId = process.env.KROGER_CLIENT_ID;
+const clientSecret = process.env.KROGER_CLIENT_SECRET;
 
 export async function getAccessToken(scope = '') {
+    console.log("clientId:", clientId);
     const authString = btoa(`${clientId}:${clientSecret}`);
     const requestBody = new URLSearchParams({
         grant_type: 'client_credentials',
@@ -25,6 +26,5 @@ export async function getAccessToken(scope = '') {
         return data.access_token;
     } catch (error) {
         console.error("Error during Kroger token request:", error);
-        throw error;
     }
 }

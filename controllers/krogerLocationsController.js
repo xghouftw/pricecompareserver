@@ -1,7 +1,6 @@
 import { getAccessToken } from '../services/krogerAuth.js';
 
 export async function searchLocations(req, res) {
-
     const latlong = req.query.latlong;
     const accessToken = await getAccessToken();
     const url = new URL("https://api.kroger.com/v1/locations");
@@ -20,7 +19,9 @@ export async function searchLocations(req, res) {
         }
         const data = await response.json();
 
-        return data.data.map((location) => location.locationId);
+        const locations = data.data.map((loc) => loc.locationId);
+
+        res.json({ locations });
     } catch (err) {
       console.log(err);
     }
