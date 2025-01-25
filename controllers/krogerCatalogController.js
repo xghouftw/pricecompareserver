@@ -70,6 +70,10 @@ export async function searchCatalog(req, res) {
         try {
             const items = await searchCatalogLocation(searchTerm, locationId, accessToken);
             for (const item of items) {
+                if (!upc) {
+                    console.log(item);
+                    continue;
+                }
                 const { upc, price } = item;
                 if (!productMap[upc]) {
                     productMap[upc] = {
