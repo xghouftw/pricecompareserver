@@ -87,15 +87,5 @@ export async function searchCatalog(req, res) {
       }
     }
   
-    return Object.values(productMap);
-
-    // const url = new URL("https://api.kroger.com/v1/products");
-    // url.searchParams.set("filter.term", searchTerm);
-    // try {
-    //     const a = await searchCatalogLocation(searchTerm, krogerLocations[0], accessToken);
-    //     console.log(a);
-    //     res.json({ a });
-    // } catch (err) {
-    //   console.log(err);
-    // }
+    res.json(Object.values(productMap));    
 }
