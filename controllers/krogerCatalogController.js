@@ -42,7 +42,6 @@ async function searchCatalogLocation(searchTerm, locationId, accessToken) {
             }
       
             return {
-              upc,
               description,
               brand,
               price,
@@ -70,20 +69,16 @@ export async function searchCatalog(req, res) {
         try {
             const items = await searchCatalogLocation(searchTerm, locationId, accessToken);
             for (const item of items) {
-                if (!upc) {
-                    console.log(item);
-                    continue;
-                }
-                const { upc, price } = item;
-                if (!productMap[upc]) {
-                    productMap[upc] = {
-                        id: "Kroger-" + upc, 
+                const { description, price } = item;
+                if (!productMap[description]) {
+                    productMap[description] = {
+                        id: "Kroger-" + description, 
                         store: "Kroger",
                         ...item
                     };
                 } else {
-                    if (price < productMap[upc].price) {
-                        productMap[upc].price = price;
+                    if (price < productMap[description].price) {
+                        productMap[description].price = price;
                     }
                 }
             }
