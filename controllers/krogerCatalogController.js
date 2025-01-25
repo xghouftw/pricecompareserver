@@ -19,12 +19,12 @@ async function searchCatalogLocation(searchTerm, locationId, accessToken) {
 
         const items = data.data.map((product) => {
             const { 
-              upc, 
-              productPageURI,
-              description, 
-              brand, 
-              items = [], 
-              images = [] 
+                upc, 
+                productPageURI,
+                description, 
+                brand, 
+                items = [], 
+                images = [] 
             } = product;
       
             // Price in an items list, for now consider the first. Consider promo it if exists
@@ -38,15 +38,16 @@ async function searchCatalogLocation(searchTerm, locationId, accessToken) {
       
             let imageUrl = '';
             if (images.length > 0 && images[0].sizes.length > 0) {
-              imageUrl = images[0].sizes[0].url || '';
+                imageUrl = images[0].sizes[0].url || '';
             }
       
             return {
-              description,
-              brand,
-              price,
-              webUrl,
-              imageUrl
+                upc,
+                description,
+                brand,
+                price,
+                webUrl,
+                imageUrl
             };
         });
         return items;
@@ -69,16 +70,20 @@ export async function searchCatalog(req, res) {
         try {
             const items = await searchCatalogLocation(searchTerm, locationId, accessToken);
             for (const item of items) {
-                const { description, price } = item;
-                if (!productMap[description]) {
-                    productMap[description] = {
-                        id: "Kroger-" + description, 
+                const { upc, price = null } = item;
+                if (!upc) {
+                    console.log(item);
+                    continue;
+                }
+                if (!productMap[upc]) {
+                    productMap[upc] = {
+                        id: "K-" + upc, 
                         store: "Kroger",
                         ...item
                     };
                 } else {
-                    if (price < productMap[description].price) {
-                        productMap[description].price = price;
+                    if (price < productMap[upc].price) {
+                        productMap[upc].price = price;
                     }
                 }
             }
