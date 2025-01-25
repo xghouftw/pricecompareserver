@@ -68,6 +68,7 @@ export async function searchCatalog(req, res) {
     for (const locationId of krogerLocations) {
       try {
         const items = await searchCatalogLocation(searchTerm, locationId, accessToken);
+        if (!items) continue;
         for (const item of items) {
           const { upc, price } = item;
           if (!productMap[upc]) {
@@ -86,6 +87,8 @@ export async function searchCatalog(req, res) {
         console.error(err);
       }
     }
-  
+
+    console.log(Object.values(productMap));
+    
     res.json(Object.values(productMap));    
 }
