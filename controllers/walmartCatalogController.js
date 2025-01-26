@@ -1,8 +1,7 @@
 import crypto from 'crypto';
 import fs from 'fs';
 
-const privateKeyPem = fs.readFileSync('/etc/secrets/walmartPrivateKey', 'utf8');
-privateKeyPem = privateKeyPem.trim();
+const privateKeyPem = fs.readFileSync('/etc/secrets/walmartPrivateKey', 'utf8').trim();
 
 const consumerId = process.env.WALMART_CONSUMER_ID;
 const keyVersion = process.env.WALMART_KEY_VERSION;
