@@ -18,7 +18,6 @@ async function searchCatalogLocation(searchTerm, locationId, accessToken) {
         if (!data.data) return [];
 
         const items = [];
-
         for (let i = 0; i < data.data.length; i++) {
             const product = data.data[i];
             const {upc, description, brand, items = [], images = []} = product;

@@ -53,8 +53,9 @@ export async function searchCatalog(req, res) {
         }
 
         const data = await response.json();
-
         if (!data.items) return [];
+
+        const items = [];
         for (let i = 0; i < data.items.length; i++) {
             const product = data.items[i];
             const {upc, name, brandName, salePrice, mediumImage} = product;
