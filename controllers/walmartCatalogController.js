@@ -6,8 +6,11 @@ const privateKeyPem = fs.readFileSync('/etc/secrets/walmartPrivateKey', 'utf8').
 const consumerId = process.env.WALMART_CONSUMER_ID;
 const keyVersion = process.env.WALMART_KEY_VERSION;
 
+
+//translating directions from Walmart documentation
 async function generateWalmartSignature(timestamp) {
-    console.log(privateKeyPem);
+    if (!consumerId || !keyVersion) throw new Error("Missing Walmart client credentials");
+
     const headers = {
       "WM_CONSUMER.ID": consumerId,
       "WM_CONSUMER.INTIMESTAMP": String(timestamp),
@@ -24,17 +27,18 @@ async function generateWalmartSignature(timestamp) {
     sign.end();
 
     const signatureBase64 = sign.sign(privateKeyPem, 'base64');
-
     return signatureBase64;
-  }
+}
 
 export async function searchCatalog(req, res) {
-    const searchTerm = req.query.searchTerm;
-    const timestamp = Date.now()
-    const signature = await generateWalmartSignature(timestamp);
-    const url = new URL("https://developer.api.walmart.com/api-proxy/service/affil/product/v2/search?");
-    url.searchParams.set("query", searchTerm);
     try {
+        const searchTerm = req.query.searchTerm;
+        if (!searchTerm || searchTerm.trim().length == 0) return res.json([]);
+        const timestamp = Date.now()
+        const signature = await generateWalmartSignature(timestamp);
+
+        const url = new URL("https://developer.api.walmart.com/api-proxy/service/affil/product/v2/search?");
+        url.searchParams.set("query", searchTerm);
         const response = await fetch(url.toString(), {
             method: "GET",
             headers: {
@@ -45,42 +49,27 @@ export async function searchCatalog(req, res) {
             }
         });
         if (!response.ok) {
-            throw new Error(`Search request failed with status ${response.status}`);
+            throw new Error(`Error retrieving items from Walmart ${response.status}`);
         }
 
         const data = await response.json();
-        console.log(data);
 
         if (!data.items) return [];
-        const items = data.items.map((product) => {
-          const {
-            upc,
-            name,
-            brandName,
-            salePrice,
-            mediumImage,
-          } = product;
+        for (let i = 0; i < data.items.length; i++) {
+            const product = data.items[i];
+            const {upc, name, brandName, salePrice, mediumImage} = product;
+            let id = 'W-' + upc;
+            let store = 'Walmart';
+            let description = name;
+            let brand = brandName;
+            let price = salePrice;
+            let imageUrl = mediumImage;
+            items.push({id, store, upc, description, brand, price, imageUrl});
+        }
 
-          const id = 'W-' + upc;
-          const store = 'Walmart';
-          const description = name;
-          const brand = brandName;
-          const price = salePrice;
-          const imageUrl = mediumImage;
-          return {
-            id, 
-            store,
-            upc,
-            description,
-            brand,
-            price,
-            imageUrl
-          }
-        });
-
-        res.json(items);
+        return res.json(items);
     } catch (error) {
-        console.error("Error during Walmart search API call:", error);
-        throw error;
+        console.error("Error in calling Walmart search API:", error);
+        return res.json([]);
     }
 }  

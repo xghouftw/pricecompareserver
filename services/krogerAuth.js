@@ -2,14 +2,12 @@ const clientId = process.env.KROGER_CLIENT_ID;
 const clientSecret = process.env.KROGER_CLIENT_SECRET;
 
 export async function getAccessToken(scope = '') {
-    const authString = btoa(`${clientId}:${clientSecret}`);
-    const requestBody = new URLSearchParams({
-        grant_type: 'client_credentials',
-        scope: scope
-    });
-    const url = new URL("https://api.kroger.com/v1/connect/oauth2/token");
-
     try {
+        if (!clientId || !clientSecret) throw new Error("Missing Kroger client credentials");
+        const authString = btoa(`${clientId}:${clientSecret}`);
+        const requestBody = new URLSearchParams({ grant_type: 'client_credentials', scope: scope });
+        const url = new URL("https://api.kroger.com/v1/connect/oauth2/token");
+        
         const response = await fetch(url.toString(), {
             method: 'POST',
             headers: {
@@ -19,11 +17,12 @@ export async function getAccessToken(scope = '') {
             body: requestBody,
         });
         if (!response.ok) {
-            throw new Error(`Token request failed with status ${response.status}`);
+            throw new Error(`Kroger token auth failed with status ${response.status} (${response.statusText})`);
         }
         const data = await response.json();
         return data.access_token;
     } catch (error) {
-        console.error("Error during Kroger token request:", error);
+        console.error("Error with Kroger token auth:", error);
+        throw error;
     }
 }
