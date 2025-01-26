@@ -20,7 +20,6 @@ async function searchCatalogLocation(searchTerm, locationId, accessToken) {
         const items = data.data.map((product) => {
             const { 
                 upc, 
-                productPageURI,
                 description, 
                 brand, 
                 items = [], 
@@ -46,7 +45,6 @@ async function searchCatalogLocation(searchTerm, locationId, accessToken) {
                 description,
                 brand,
                 price,
-                webUrl,
                 imageUrl
             };
         });
@@ -87,7 +85,7 @@ export async function searchCatalog(req, res) {
         } catch (err) {
             console.error(err);
         }
-    }
-    
+    }    
+
     res.json(Object.values(productMap));    
 }
