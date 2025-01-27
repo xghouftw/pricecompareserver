@@ -35,6 +35,7 @@ async function searchCatalogLocation(searchTerm, locationId, accessToken) {
             const a = {upc, description, brand, price, imageUrl}
             console.log(a);
             items.push(a);
+            console.log(items);
         }
 
         return items;
