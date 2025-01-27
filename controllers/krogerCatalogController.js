@@ -15,7 +15,6 @@ async function searchCatalogLocation(searchTerm, locationId, accessToken) {
             throw new Error(`Error with Kroger's authenticaion: ${response.status}`);
         }
         const data = await response.json();
-        console.log(data);
         if (!data.data) return [];
 
         const items = [];
@@ -62,6 +61,7 @@ export async function searchCatalog(req, res) {
         for (const locationId of locationIds) {
             try {
                 const items = await searchCatalogLocation(searchTerm, locationId, accessToken);
+                console.log(items);
                 for (const item of items) {
                     if (!item) continue;
                     const { upc, price } = item;
