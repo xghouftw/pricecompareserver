@@ -6,7 +6,6 @@ const privateKeyPem = fs.readFileSync('/etc/secrets/walmartPrivateKey', 'utf8').
 const consumerId = process.env.WALMART_CONSUMER_ID;
 const keyVersion = process.env.WALMART_KEY_VERSION;
 
-
 //translating directions from Walmart documentation
 async function generateWalmartSignature(timestamp) {
     if (!consumerId || !keyVersion) throw new Error("Missing Walmart client credentials");
@@ -36,9 +35,11 @@ export async function searchCatalog(req, res) {
         if (!searchTerm || searchTerm.trim().length == 0) return res.json([]);
         const timestamp = Date.now()
         const signature = await generateWalmartSignature(timestamp);
+        console.log("Searching through Walmart");
 
         const url = new URL("https://developer.api.walmart.com/api-proxy/service/affil/product/v2/search?");
         url.searchParams.set("query", searchTerm);
+        url.searchParams.set("numItems", "25");
         const response = await fetch(url.toString(), {
             method: "GET",
             headers: {

@@ -4,6 +4,7 @@ async function searchCatalogLocation(searchTerm, locationId, accessToken) {
     const url = new URL("https://api.kroger.com/v1/products");
     url.searchParams.set("filter.term", searchTerm);
     url.searchParams.set("filter.locationId", locationId);
+    url.searchParams.set("filter.limit", "25");
     try {
         const response = await fetch(url.toString(), {
             headers: {
@@ -46,9 +47,10 @@ export async function searchCatalog(req, res) {
         const krogerLocations = req.query.krogerLocations;
 
         if (!searchTerm || searchTerm.trim().length == 0) return res.json([]);
-        if (krogerLocations.length == 0) return res.json([]);
+        if (krogerLocations.length == 0) krogerLocations = "02400352";
 
         const locationIds = krogerLocations.split(',');
+        console.log("Searching Kroger locations:", locationIds);
         const accessToken = await getAccessToken('product.compact');
 
         const productMap = {};

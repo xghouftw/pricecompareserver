@@ -22,7 +22,6 @@ export async function searchLocations(req, res) {
         }
 
         const data = await response.json();
-        console.log(data);
 
         const locations = data.data.map((loc) => loc.locationId);
         return res.json(locations);
