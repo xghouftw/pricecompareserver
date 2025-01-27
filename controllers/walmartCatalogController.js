@@ -42,7 +42,7 @@ export async function searchCatalog(req, res) {
         url.searchParams.set("numItems", "25");
         const response = await fetch(url.toString(), {
             method: "GET",
-            headers: {
+            headers: { //access token
                 "WM_CONSUMER.ID": consumerId,
                 "WM_CONSUMER.INTIMESTAMP": timestamp,
                 "WM_SEC.KEY_VERSION": keyVersion,
@@ -55,7 +55,7 @@ export async function searchCatalog(req, res) {
 
         const data = await response.json();
         if (!data.items) return [];
-
+        //extract relevant info
         const items = [];
         for (let i = 0; i < data.items.length; i++) {
             const product = data.items[i];

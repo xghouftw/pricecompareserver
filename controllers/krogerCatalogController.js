@@ -18,6 +18,7 @@ async function searchCatalogLocation(searchTerm, locationId, accessToken) {
         const data = await response.json();
         if (!data.data) return [];
 
+        // extract relevant info
         const listing = [];
         for (let i = 0; i < data.data.length; i++) {
             const product = data.data[i];
@@ -47,6 +48,7 @@ export async function searchCatalog(req, res) {
         let krogerLocations = req.query.krogerLocations;
 
         if (!searchTerm || searchTerm.trim().length == 0) return res.json([]);
+        //default location in case Kroger's location API fails
         if (krogerLocations.length == 0) krogerLocations = "02400352";
 
         const locationIds = krogerLocations.split(',');
@@ -54,7 +56,7 @@ export async function searchCatalog(req, res) {
         const accessToken = await getAccessToken('product.compact');
 
         const productMap = {};
-
+        // compile items from each location and take lowest price
         for (const locationId of locationIds) {
             try {
                 const items = await searchCatalogLocation(searchTerm, locationId, accessToken);
@@ -78,7 +80,6 @@ export async function searchCatalog(req, res) {
             }
         }    
 
-        console.log(Object.values(productMap).length);
         return res.json(Object.values(productMap));    
     } catch (Error) {
         console.error("Error during Kroger search API call:", Error);

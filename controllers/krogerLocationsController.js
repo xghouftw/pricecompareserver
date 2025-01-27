@@ -1,5 +1,5 @@
 import { getAccessToken } from '../services/krogerAuth.js';
-
+// kroger api needs a location to return price data
 export async function searchLocations(req, res) {
     try {
         const latlong = req.query.latlong;
@@ -8,7 +8,7 @@ export async function searchLocations(req, res) {
 
         const url = new URL("https://api.kroger.com/v1/locations");
         url.searchParams.set("filter.latLong.near", latlong);
-        url.searchParams.set("filter.radiusInMiles", "3");
+        url.searchParams.set("filter.radiusInMiles", "5");
 
         const response = await fetch(url.toString(), {
             headers: {
