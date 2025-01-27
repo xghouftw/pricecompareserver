@@ -18,6 +18,9 @@ export async function getAccessToken(scope = '') {
         });
         if (!response.ok) {
             throw new Error(`Kroger token auth failed with status ${response.status} (${response.statusText})`);
+        } 
+        else {
+            console.log("Kroger token auth successful");
         }
         const data = await response.json();
         return data.access_token;
