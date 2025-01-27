@@ -17,7 +17,7 @@ async function searchCatalogLocation(searchTerm, locationId, accessToken) {
         const data = await response.json();
         if (!data.data) return [];
 
-        const items = [];
+        const listing = [];
         for (let i = 0; i < data.data.length; i++) {
             const product = data.data[i];
             const {upc, description, brand, items = [], images = []} = product;
@@ -30,13 +30,9 @@ async function searchCatalogLocation(searchTerm, locationId, accessToken) {
             if (images.length > 0 && images[0].sizes.length > 0) {
                 imageUrl = images[0].sizes[0].url || '';
             }
-            const a = {upc, description, brand, price, imageUrl}
-            console.log(a);
-            items.push(a);
-            console.log(items);
+            listing.push({upc, description, brand, price, imageUrl};)
         }
-
-        return items;
+        return listing;
 
     } catch (error) {
       console.log("Error in calling Kroger search API:", error);
@@ -60,7 +56,6 @@ export async function searchCatalog(req, res) {
         for (const locationId of locationIds) {
             try {
                 const items = await searchCatalogLocation(searchTerm, locationId, accessToken);
-                console.log(items);
                 for (const item of items) {
                     if (!item) continue;
                     const { upc, price } = item;
