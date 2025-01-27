@@ -15,6 +15,7 @@ async function searchCatalogLocation(searchTerm, locationId, accessToken) {
             throw new Error(`Error with Kroger's authenticaion: ${response.status}`);
         }
         const data = await response.json();
+        console.log(data);
         if (!data.data) return [];
 
         const items = [];
@@ -52,6 +53,9 @@ export async function searchCatalog(req, res) {
 
         const locationIds = krogerLocations.split(',');
         const accessToken = await getAccessToken('product.compact');
+
+        console.log(locationIds);
+        console.log(accessToken);
 
         const productMap = {};
 
