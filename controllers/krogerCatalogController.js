@@ -44,7 +44,7 @@ async function searchCatalogLocation(searchTerm, locationId, accessToken) {
 export async function searchCatalog(req, res) {
     try {
         const searchTerm = req.query.searchTerm;
-        const krogerLocations = req.query.krogerLocations;
+        let krogerLocations = req.query.krogerLocations;
 
         if (!searchTerm || searchTerm.trim().length == 0) return res.json([]);
         if (krogerLocations.length == 0) krogerLocations = "02400352";
