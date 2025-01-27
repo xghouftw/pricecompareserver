@@ -78,6 +78,7 @@ export async function searchCatalog(req, res) {
             }
         }    
 
+        console.log(Object.values(productMap).length);
         return res.json(Object.values(productMap));    
     } catch (Error) {
         console.error("Error during Kroger search API call:", Error);
