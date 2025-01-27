@@ -30,7 +30,7 @@ async function searchCatalogLocation(searchTerm, locationId, accessToken) {
             if (images.length > 0 && images[0].sizes.length > 0) {
                 imageUrl = images[0].sizes[0].url || '';
             }
-            listing.push({upc, description, brand, price, imageUrl};)
+            listing.push({upc, description, brand, price, imageUrl});
         }
         return listing;
 
