@@ -17,6 +17,7 @@ async function searchCatalogLocation(searchTerm, locationId, accessToken) {
         const data = await response.json();
         if (!data.data) return [];
 
+        console.log(data.data);
         const items = [];
         for (let i = 0; i < data.data.length; i++) {
             const product = data.data[i];
@@ -25,13 +26,15 @@ async function searchCatalogLocation(searchTerm, locationId, accessToken) {
             if (items.length > 0 && items[0].price) {
                 price = items[0].price.promo || items[0].price.regular || -1;
             }
+            console.log(price);
             if (price === -1) continue;
             let imageUrl = '';
             if (images.length > 0 && images[0].sizes.length > 0) {
                 imageUrl = images[0].sizes[0].url || '';
             }
-
-            items.push({upc, description, brand, price, imageUrl});
+            const a = {upc, description, brand, price, imageUrl}
+            console.log(a);
+            items.push(a);
         }
 
         return items;
@@ -52,9 +55,6 @@ export async function searchCatalog(req, res) {
 
         const locationIds = krogerLocations.split(',');
         const accessToken = await getAccessToken('product.compact');
-
-        console.log(locationIds);
-        console.log(accessToken);
 
         const productMap = {};
 
